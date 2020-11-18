@@ -27,11 +27,17 @@ def mse_loss(yhat, y):
     return loss
 
 
-def free_energy (yhat, rho, x, simpson_matrix, matrix, lambd):
+def free_energy(yhat, rho, x, simpson_matrix, matrix, lambd, pre_training):
     f1 = torch.mm (yhat, yhat.T) * matrix
     dx = x[1] - x[0]
     first_term = (dx/3) * torch.mm(simpson_matrix,yhat * torch.log(rho * yhat))
     second_term = (rho/2) * (dx/3)**2 * torch.mm(torch.mm(simpson_matrix, f1), simpson_matrix.T)
     third_term = lambd * (((dx/3) *(torch.mm(simpson_matrix,yhat))) - 1 ) **2
     loss = first_term + second_term + third_term
+    if pre_training:
+        pass
+    if not pre_training:
+        loss = 25 - torch.square(loss - 5)
     return loss
+
+
